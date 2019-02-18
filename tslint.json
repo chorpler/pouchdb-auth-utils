@@ -1,0 +1,20 @@
+{
+  // "extends": "dtslint/dt.json",
+  // "rules": {
+  //     // TODOs
+  //     "no-declare-current-package": false,
+  //     "no-unnecessary-generics": false,
+  //     // TODO: Fixing this lint error will require a large refactor
+  //     "no-single-declare-module": false
+  // }
+  "rules": {
+    "no-duplicate-variable": true,
+    "no-unused-variable": [
+      false
+    ],
+    "interface-name": false
+  },
+  "rulesDirectory": [
+    "node_modules/tslint-eslint-rules/dist/rules"
+  ]
+}

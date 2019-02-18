@@ -1,0 +1,74 @@
+language: node_js
+
+services:
+  - docker
+
+node_js:
+  - "6"
+
+sudo: false
+
+addons:
+  jwt:
+    # SAUCE_ACCESS_KEY
+    - secure: PUcJWxBQJ/uGdDzcoI7PcASKJUGujmBRrwCylMHCaygxt2OSwHt7aMaa5phfAfDU/VWG+FAMruDajPsTztXichj94QUqhnTGHeFnv7V0DGJloZVGFz/svzbW2feeDq1enj2lkJUWEHxRIfV8tH7xDBHC16R/WV7g9UFa69GXSXg=
+
+before_install:
+  # Install PhantomJS and cache it
+  # See https://github.com/Medium/phantomjs#continuous-integration
+  - "export PHANTOMJS_VERSION=2.1.1"
+  - "export PATH=$PWD/travis_phantomjs/phantomjs-$PHANTOMJS_VERSION-linux-x86_64/bin:$PATH"
+  - "if [ $(phantomjs --version) != $PHANTOMJS_VERSION ]; then rm -rf $PWD/travis_phantomjs; mkdir -p $PWD/travis_phantomjs; fi"
+  - "if [ $(phantomjs --version) != $PHANTOMJS_VERSION ]; then wget https://github.com/Medium/phantomjs/releases/download/v$PHANTOMJS_VERSION/phantomjs-$PHANTOMJS_VERSION-linux-x86_64.tar.bz2 -O $PWD/travis_phantomjs/phantomjs-$PHANTOMJS_VERSION-linux-x86_64.tar.bz2; fi"
+  - "if [ $(phantomjs --version) != $PHANTOMJS_VERSION ]; then tar -xvf $PWD/travis_phantomjs/phantomjs-$PHANTOMJS_VERSION-linux-x86_64.tar.bz2 -C $PWD/travis_phantomjs; fi"
+  - "phantomjs --version"
+
+  # package-lock.json was introduced in npm@5
+  - npm install -g npm@5 # skip this if you are using node 9
+  - npm install -g greenkeeper-lockfile@1
+
+before_script:
+  # update package-lock.json
+  - greenkeeper-lockfile-update
+  # run linter before the tests
+  - npm run lint
+
+after_script:
+  # upload the updated package-lock.json
+  - greenkeeper-lockfile-upload
+
+script: npm run $COMMAND
+
+env:
+  global:
+  - NPM_CONFIG_PROGRESS="false"
+  - SAUCE_USERNAME=ptitjes
+
+  matrix:
+  - COMMAND=test-types
+
+  - SERVER=couchdb:latest CLIENT=node COMMAND=test
+  - SERVER=couchdb:latest CLIENT=phantom COMMAND=test
+
+  - SERVER=couchdb:1.7.1 CLIENT=node COMMAND=test
+  - SERVER=couchdb:1.7.1 CLIENT=phantom COMMAND=test
+
+  - SERVER=pouchdb-server CLIENT=node COMMAND=test
+  - SERVER=pouchdb-server CLIENT=phantom COMMAND=test
+
+  - SERVER=couchdb:latest CLIENT=saucelabs:Chrome COMMAND=test
+  - SERVER=couchdb:latest CLIENT=saucelabs:Firefox COMMAND=test
+  - SERVER=couchdb:latest CLIENT=saucelabs:Safari COMMAND=test
+  - SERVER=couchdb:latest CLIENT="saucelabs:Internet Explorer:10:Windows 8" COMMAND=test
+  - SERVER=couchdb:latest CLIENT="saucelabs:Internet Explorer:11:Windows 10" COMMAND=test
+
+branches:
+  only:
+  - master
+  - /^greenkeeper/.*$/
+
+cache:
+  directories:
+  - $HOME/.npm
+  # See https://github.com/Medium/phantomjs#continuous-integration
+  - travis_phantomjs
