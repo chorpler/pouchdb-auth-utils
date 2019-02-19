@@ -1,7 +1,7 @@
 {
-  "name": "pouchdb-auth-utils",
-  "version": "7.0.0",
-  "description": "PouchDB Authentication plugin, revised for PouchDB >=7.0.0 and requiring promises",
+  "name": "@onsite/pouchdb-auth-utils",
+  "version": "2.0.0-rc.3",
+  "description": "PouchDB Authentication plugin, revised for PouchDB 7.0.0+ and requiring promises",
   "keywords": [
     "pouch",
     "pouchdb",
@@ -13,34 +13,22 @@
     "url": "https://github.com/chorpler/pouchdb-auth-utils/issues"
   },
   "license": "Apache-2.0",
-  "author": {
-    "name": "David Sargeant",
-    "email": "chorpler@gmail.com",
-    "url": "https://starmobiledevelopers.com"
-  },
+  "author": "David Sargeant <chorpler@gmail.com> (https://starmobiledevelopers.com)",
   "contributors": [
-    {
-      "name": "Nolan Lawson",
-      "email": "nolan@nolanlawson.com",
-      "url": "https://nolanlawson.com/"
-    },
-    {
-      "name": "Didier Villevalois",
-      "email": "ptitjes@free.fr"
-    }
+    "Nolan Lawson <nolan@nolanlawson.com> (https://nolanlawson.com/)",
+    "Didier Villevalois <ptitjes@free.fr>"
   ],
   "files": [
+    "compiled",
     "dist",
     "lib",
-    "build",
-    "types"
+    "src"
   ],
   "main": "lib/index.js",
   "jsnext:main": "lib/index.es.js",
   "module": "lib/index.es.js",
   "browser": "lib/index.browser.js",
-  "esm": true,
-  "types": "types/index.d.ts",
+  "types": "src/index.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/chorpler/pouchdb-auth-utils.git"
@@ -48,14 +36,14 @@
   "scripts": {
     "clrscr": "node -e \"process.stdout.write('\\x1B[2J\\x1B[0f')\"",
     "compile": "tsc -p ./tsconfig.json",
-    "clean": "rimraf lib/* dist/* build/* && mkdirp lib dist build",
+    "clean": "rimraf lib/* dist/* compiled/* && mkdirp lib dist compiled",
     "declarations": "tsc -p ./tsconfig.json --emitDeclarationOnly",
     "rollup-cjs": "rollup -c config/rollup.config.cjs.js && rollup -c config/rollup.config.browser.cjs.js",
     "rollup-es": "rollup -c config/rollup.config.es.js && rollup -c config/rollup.config.browser.es.js",
     "rollup": "npm-run-all --parallel rollup-cjs rollup-es",
-    "browserify:rollup": "browserify -t [ babelify --global --presets [ @babel/preset-env ] ] -t brfs -p bundle-collapser/plugin -s PouchAuthentication lib/index.browser.js > dist/pouchdb.authentication.js",
+    "browserify:rollup": "browserify -t [ babelify --global --presets [ @babel/preset-env ] ] -t brfs -p bundle-collapser/plugin -s PouchAuthUtils lib/index.browser.js > dist/pouchdb.auth.utils.js",
     "browserify": "npm run browserify:rollup",
-    "minify": "uglifyjs -mc < dist/pouchdb.authentication.js > dist/pouchdb.authentication.min.js",
+    "minify": "uglifyjs -mc < dist/pouchdb.auth.utils.js > dist/pouchdb.auth.utils.min.js",
     "build": "npm run build:prod",
     "build:dev": "npm-run-all clean rollup browserify minify",
     "build:prod": "npm-run-all clean rollup browserify minify",
@@ -77,8 +65,7 @@
     "pouchdb-fetch": "^7.0.0",
     "pouchdb-utils": "^7.0.0",
     "tough-cookie": "^3.0.1",
-    "url-parse": "^1.4.4",
-    "whatwg-url": "^7.0.0"
+    "url-parse": "^1.4.4"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0-rc.1",
@@ -88,7 +75,6 @@
     "@types/pouchdb": "^6.3.2",
     "@types/pouchdb-core": "^7.0.1",
     "@types/url-parse": "^1.4.3",
-    "@types/whatwg-url": "^6.4.0",
     "add-cors-to-couchdb": "0.0.6",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "babel-register": "^6.26.0",
@@ -135,12 +121,14 @@
   },
   "dependenciesComments": {
     "removed": {
+      "whatwg-url": "^7.0.0",
       "fetch-cookie": "^0.7.2",
       "node-fetch": "^2.3.0"
     }
   },
   "devDependenciesComments": {
     "removed": {
+      "@types/whatwg-url": "^6.4.0",
       "karma-phantomjs-launcher": "^1.0.4",
       "webpack": "^4.28.2",
       "webpack-cli": "^3.1.2",
@@ -180,5 +168,11 @@
     "plugins": [
       "transform-es2015-modules-commonjs"
     ]
+  },
+  "homepage": "https://github.com/chorpler/pouchdb-auth-utils#readme",
+  "directories": {
+    "doc": "docs",
+    "lib": "lib",
+    "test": "test"
   }
 }

@@ -29,20 +29,7 @@ const g = typeof window !== 'undefined' ? window : typeof global !== 'undefined'
 // const Url = (URLParse.default);
 // const Url = URLParse;
 
-type ParsedURL = URLParse.ParsedURL;
 const emptyFunc = function(...args):any {};
-const fakeUrl = {
-  new: emptyFunc,
-  // (address: string, parser?: boolean | URLParse.QueryParser): URLParse.ParsedURL;
-  // (address: string, location?: string | object, parser?: boolean | URLParse.QueryParser): URLParse.ParsedURL;
-
-  extractProtocol: emptyFunc,
-  location: emptyFunc,
-  qs: {
-      parse: emptyFunc,
-      stringify: emptyFunc,
-  },
-};
 // const Url = URLParse && typeof URLParse.default !== 'undefined' ? URLParse.default : URLParse && typeof URLParse.location !== 'undefined' ? URLParse : fakeUrl;
 
 
@@ -58,22 +45,40 @@ const fet = typeof g['fetch'] === 'function' ? g['fetch'] : cFetch;
 // const fet = typeof g['fetch'] === 'function' ? g['fetch'] : nFetch;
 // const URL = typeof g['URL'] === 'function' ? g['URL'] : wURL;
 
-interface ParsedURI {
-  anchor     : string;
-  authority  : string;
-  directory  : string;
-  file       : string;
-  host       : string;
-  password  ?: string;
-  path       : string;
-  port       : string;
-  protocol   : string;
-  query     ?: string;
-  queryKey  ?: any   ;
-  relative   : string;
-  source     : string;
-  user      ?: string;
-  userInfo  ?: string;
+// interface ParsedURI {
+//   anchor     : string;
+//   authority  : string;
+//   directory  : string;
+//   file       : string;
+//   host       : string;
+//   password  ?: string;
+//   path       : string;
+//   port       : string;
+//   protocol   : string;
+//   query     ?: string;
+//   queryKey  ?: any   ;
+//   relative   : string;
+//   source     : string;
+//   user      ?: string;
+//   userInfo  ?: string;
+// }
+
+interface ParsedURL {
+  readonly auth: string;
+  readonly hash: string;
+  readonly host: string;
+  readonly hostname: string;
+  readonly href: string;
+  readonly origin: string;
+  readonly password: string;
+  readonly pathname: string;
+  readonly port: string;
+  readonly protocol: string;
+  readonly query: { [key: string]: string | undefined };
+  readonly slashes: boolean;
+  readonly username: string;
+  set(part: URLParse.URLPart, value: string | object | number | undefined, fn?: boolean | URLParse.QueryParser): ParsedURL;
+  toString(stringify?: URLParse.StringifyQuery): string;
 }
 
 interface AuthHeader {
@@ -186,20 +191,29 @@ interface Database<Content extends {} = {}> extends PouchDB.Static {
   changeUsername(oldUsername: string, newUsername: string, options?: PouchDB.Core.Options): Promise<PouchDB.Core.Response>;
 
   /**
-   * Test if user `username` has role `role`.
+   * Test if user has a role.
+   * Must be logged in as administrator or as specified user.
    */
   hasRole(username: string, role: string, options?: PutUserOptions): Promise<boolean>;
-
+  
+  /**
+   * Get roles for user, as array of strings.
+   * Must be logged in as administrator or as specified user.
+   */
+  getRoles(username: string, role: string, options?: PutUserOptions): Promise<boolean>;
+  
   /**
    * Add roles `roles` to user `username`. `roles` can be a single string or an array of strings.
    * If any of the provided roles already exist for the user, they will not be duplicated.
+   * Must be logged in as administrator.
    */
   addRoles(username: string, roles: string[], options?: PutUserOptions): Promise<PouchDB.Core.Response>;
   addRoles(username: string, roles: string, options?: PutUserOptions): Promise<PouchDB.Core.Response>;
-
+  
   /**
    * Delete roles `roles` from user `username`. `roles` can be a single string or an array of strings.
    * If any of the provided roles do not exist for the user, they will be ignored (will not cause an error)
+   * Must be logged in as administrator.
    */
   deleteRoles(username: string, roles: string[], options?: PutUserOptions): Promise<PouchDB.Core.Response>;
   deleteRoles(username: string, roles: string, options?: PutUserOptions): Promise<PouchDB.Core.Response>;
@@ -463,8 +477,10 @@ const makeBaseUrl = function(baseURL:string, newURL:string):string {
 }
 
 function getURLWithoutSearchParams(url:string):string {
-  let uri:ParsedURI = parseUri(url);
-  let cleanURL:string = uri.protocol + "://" + uri.authority + uri.directory + uri.file;
+  let uri:ParsedURL = new Url(url);
+  // let port:string = uri.port ? ":" + uri.port : "";
+  let auth:string = uri.username ? uri.username + ":" + uri.password + "@" : "";
+  let cleanURL:string = uri.protocol + "://" + auth + uri.host + "/" + uri.pathname;
   return cleanURL;
 }
 
@@ -764,6 +780,8 @@ export {
   PDBOpts,
   UserContext,
   User,
+  Database,
+  PouchDatabase,
   PDB,
   PouchDBUserDoc,
   LoginOptions,
@@ -779,5 +797,4 @@ export {
   getURLWithoutSearchParams,
   getFullFetchURL,
   Url,
-  ParsedURL,
 };
