@@ -1,171 +1,224 @@
-// // Type definitions for pouchdb-authentication 7.0.1
-// // Project: https://pouchdb.com/
-// // Definitions by: Didier Villevalois <ptitjes@free.fr>
-// // Definitions: https://github.com/pouchdb-community/pouchdb-authentication
-// // TypeScript Version: 3.2
+// Type definitions for pouchdb-authentication 7.0.1
+// Project: https://pouchdb.com/
+// Definitions by: Didier Villevalois <ptitjes@free.fr>
+// Definitions: https://github.com/pouchdb-community/pouchdb-authentication
+// TypeScript Version: 3.2
 
-// /// <reference types="pouchdb-core" />
+/// <reference types="pouchdb-core" />
 
-// // TODO: Fixing this lint error will require a large refactor
-// /* tslint:disable:no-single-declare-module */
+// TODO: Fixing this lint error will require a large refactor
+/* tslint:disable:no-single-declare-module */
 
-// declare namespace PouchDB {
-//   namespace Authentication {
+declare namespace PouchDB {
+  namespace Authentication {
 
-//     interface AuthHeader {
-//       username?:string;
-//       password?:string;
-//     }
+    interface AuthHeader {
+      username?:string;
+      password?:string;
+    }
     
-//     interface UserContext {
-//       name: string;
-//       roles?: string[];
-//     }
+    interface UserContext {
+      name: string;
+      roles?: string[];
+    }
 
-//     interface User extends UserContext {
-//     }
+    interface User extends UserContext {
+    }
 
-//     interface PouchDBUserDoc extends User {
-//       _id?:string;
-//       _rev?:string;
-//       [propName:string]:any;
-//     }
+    interface PouchDBUserDoc extends User {
+      _id?:string;
+      _rev?:string;
+      [propName:string]:any;
+    }
     
-//     interface PutUserOptions extends PouchDB.Core.Options {
-//       metadata?: any;
-//       roles?: string[];
-//     }
+    interface PutUserOptions extends PouchDB.Core.Options {
+      metadata?: any;
+      roles?: string[];
+    }
     
-//     interface LoginOptions extends PouchDB.Core.Options {
-//     }
+    interface LoginOptions extends PouchDB.Core.Options {
+    }
 
-//     interface BasicResponse extends PouchDB.Core.BasicResponse {
-//     }
+    interface BasicResponse extends PouchDB.Core.BasicResponse {
+    }
     
-//     interface LoginResponse extends Core.BasicResponse, UserContext {
-//     }
+    interface LoginResponse extends PouchDB.Core.BasicResponse, UserContext {
+    }
 
-//     interface SessionResponse extends Core.BasicResponse {
-//       info: {
-//         authenticated: string;
-//         authentication_db: string;
-//         authentication_handlers: string[];
-//       };
-//       userCtx: UserContext;
-//     }
+    interface SessionResponse extends PouchDB.Core.BasicResponse {
+      info: {
+        authenticated: string;
+        authentication_db: string;
+        authentication_handlers: string[];
+      };
+      userCtx: UserContext;
+    }
 
-//     interface PutUserOptions extends Core.Options {
-//       metadata?: any;
-//       roles?: string[];
-//     }
+    interface PutUserOptions extends PouchDB.Core.Options {
+      metadata?: any;
+      roles?: string[];
+    }
 
-//     interface CouchNodeMembership {
-//       all_nodes:string[];
-//       cluster_nodes:string[];
-//     }
-//   }
+    interface CouchNodeMembership {
+      all_nodes:string[];
+      cluster_nodes:string[];
+    }
+    type URLPart = 'auth'
+        | 'hash'
+        | 'host'
+        | 'hostname'
+        | 'href'
+        | 'origin'
+        | 'password'
+        | 'pathname'
+        | 'port'
+        | 'protocol'
+        | 'query'
+        | 'slashes'
+        | 'username';
 
-//   // interface Database<Content extends {} = {}> extends PouchDB.Database {
-//   interface Database<Content extends {} = {}> {
-//     /**
-//      * Log in an existing user.
-//      * Throws an error if the user doesn't exist yet, the password is wrong, the HTTP server is unreachable, or a meteor struck your computer.
-//      */
-//     logIn(username:string, password:string, options?:PouchDB.Core.Options):Promise<Authentication.LoginResponse>;
+    type QueryParser = (query: string) => object;
 
-//     /**
-//      * Logs out whichever user is currently logged in.
-//      * If nobody's logged in, it does nothing and just returns `{"ok" : true}`.
-//      */
-//     logOut():Promise<PouchDB.Core.BasicResponse>;
+    type StringifyQuery = (query: object) => string;
 
-//     /**
-//      * Returns information about the CouchDB node membership of the server for the current database.
-//      */
-//     getMembership(options?:Authentication.LoginOptions):Promise<Authentication.CouchNodeMembership>;
+    interface ParsedURL {
+      readonly auth: string;
+      readonly hash: string;
+      readonly host: string;
+      readonly hostname: string;
+      readonly href: string;
+      readonly origin: string;
+      readonly password: string;
+      readonly pathname: string;
+      readonly port: string;
+      readonly protocol: string;
+      readonly query: { [key: string]: string | undefined };
+      readonly slashes: boolean;
+      readonly username: string;
+      set(part: URLPart, value: string | object | number | undefined, fn?: boolean | QueryParser): ParsedURL;
+      toString(stringify?: StringifyQuery): string;
+    }
 
-//     /**
-//      * Returns information about the current session.
-//      * In other words, this tells you which user is currently logged in.
-//      */
-//     getSession():Promise<Authentication.SessionResponse>;
+    interface URLParse {
+      new(address: string, parser?: boolean | QueryParser): URLParse;
+      new(address: string, location?: string | object, parser?: boolean | QueryParser): URLParse;
+      (address: string, parser?: boolean | QueryParser): URLParse;
+      (address: string, location?: string | object, parser?: boolean | QueryParser): URLParse;
+  
+      extractProtocol(url: string): {
+          slashes: boolean;
+          protocol: string;
+          rest: string;
+      };
+      location(url: string): object;
+      qs: {
+          parse: QueryParser;
+          stringify: StringifyQuery;
+      };
+    }
+  }
 
-//     /**
-//      * Sign up a new user who doesn't exist yet.
-//      * Throws an error if the user already exists or if the username is invalid, or if some network error occurred.
-//      * CouchDB has some limitations on user names (e.g. they cannot contain the character `:`).
-//      */
-//     signUp(username:string, password:string, options?:Authentication.PutUserOptions):Promise<PouchDB.Core.Response>;
+  // interface Database<Content extends {} = {}> extends PouchDB.Database {
+  interface Database<Content extends {} = {}> {
+    /**
+     * Log in an existing user.
+     * Throws an error if the user doesn't exist yet, the password is wrong, the HTTP server is unreachable, or a meteor struck your computer.
+     */
+    logIn(username:string, password:string, options?:PouchDB.Core.Options):Promise<Authentication.LoginResponse>;
 
-//     /**
-//      * Returns the user document associated with a username.
-//      * (CouchDB, in a pleasing show of consistency, stores users as JSON documents in the special `_users` database.)
-//      * This is the primary way to get metadata about a user.
-//      */
-//     getUser(username:string, options?:PouchDB.Core.Options):Promise<PouchDB.Core.Document<Content & Authentication.User> & PouchDB.Core.GetMeta>;
-//     // getUser(username: string, options?: PouchDB.Core.Options):Promise<PouchDBUserDoc>;
+    /**
+     * Logs out whichever user is currently logged in.
+     * If nobody's logged in, it does nothing and just returns `{"ok" : true}`.
+     */
+    logOut():Promise<PouchDB.Core.BasicResponse>;
 
-//     /**
-//      * Update the metadata of a user.
-//      */
-//     putUser(username:string, options?:Authentication.PutUserOptions): Promise<PouchDB.Core.Response>;
+    /**
+     * Returns information about the CouchDB node membership of the server for the current database.
+     */
+    getMembership(options?:Authentication.LoginOptions):Promise<Authentication.CouchNodeMembership>;
 
-//     /**
-//      * Delete a user.
-//      */
-//     deleteUser(username: string, options?: PouchDB.Core.Options): Promise<PouchDB.Core.Response>;
+    /**
+     * Returns information about the current session.
+     * In other words, this tells you which user is currently logged in.
+     */
+    getSession():Promise<Authentication.SessionResponse>;
 
-//     /**
-//      * Set new `password` for user `username`.
-//      */
-//     changePassword(username: string, password: string, options?: PouchDB.Core.Options): Promise<PouchDB.Core.Response>;
+    /**
+     * Sign up a new user who doesn't exist yet.
+     * Throws an error if the user already exists or if the username is invalid, or if some network error occurred.
+     * CouchDB has some limitations on user names (e.g. they cannot contain the character `:`).
+     */
+    signUp(username:string, password:string, options?:Authentication.PutUserOptions):Promise<PouchDB.Core.Response>;
 
-//     /**
-//      * Renames `oldUsername` to `newUsername`.
-//      */
-//     changeUsername(oldUsername: string, newUsername: string, options?: PouchDB.Core.Options): Promise<PouchDB.Core.Response>;
+    /**
+     * Returns the user document associated with a username.
+     * (CouchDB, in a pleasing show of consistency, stores users as JSON documents in the special `_users` database.)
+     * This is the primary way to get metadata about a user.
+     */
+    getUser(username:string, options?:PouchDB.Core.Options):Promise<PouchDB.Core.Document<Content & Authentication.User> & PouchDB.Core.GetMeta>;
+    // getUser(username: string, options?: PouchDB.Core.Options):Promise<PouchDBUserDoc>;
 
-//     /**
-//      * Test if user has a role.
-//      * Must be logged in as administrator or as specified user.
-//      */
-//     hasRole(username: string, role: string, options?: Authentication.PutUserOptions): Promise<boolean>;
+    /**
+     * Update the metadata of a user.
+     */
+    putUser(username:string, options?:Authentication.PutUserOptions): Promise<PouchDB.Core.Response>;
+
+    /**
+     * Delete a user.
+     */
+    deleteUser(username: string, options?: PouchDB.Core.Options): Promise<PouchDB.Core.Response>;
+
+    /**
+     * Set new `password` for user `username`.
+     */
+    changePassword(username: string, password: string, options?: PouchDB.Core.Options): Promise<PouchDB.Core.Response>;
+
+    /**
+     * Renames `oldUsername` to `newUsername`.
+     */
+    changeUsername(oldUsername: string, newUsername: string, options?: PouchDB.Core.Options): Promise<PouchDB.Core.Response>;
+
+    /**
+     * Test if user has a role.
+     * Must be logged in as administrator or as specified user.
+     */
+    hasRole(username: string, role: string, options?: Authentication.PutUserOptions): Promise<boolean>;
     
-//     /**
-//      * Get roles for user, as array of strings.
-//      * Must be logged in as administrator or as specified user.
-//      */
-//     getRoles(username: string, role: string, options?: Authentication.PutUserOptions): Promise<boolean>;
+    /**
+     * Get roles for user, as array of strings.
+     * Must be logged in as administrator or as specified user.
+     */
+    getRoles(username: string, role: string, options?: Authentication.PutUserOptions): Promise<boolean>;
     
-//     /**
-//      * Add roles `roles` to user `username`. `roles` can be a single string or an array of strings.
-//      * If any of the provided roles already exist for the user, they will not be duplicated.
-//      * Must be logged in as administrator.
-//      */
-//     addRoles(username: string, roles: string[], options?: Authentication.PutUserOptions): Promise<PouchDB.Core.Response>;
-//     addRoles(username: string, roles: string, options?: Authentication.PutUserOptions): Promise<PouchDB.Core.Response>;
+    /**
+     * Add roles `roles` to user `username`. `roles` can be a single string or an array of strings.
+     * If any of the provided roles already exist for the user, they will not be duplicated.
+     * Must be logged in as administrator.
+     */
+    addRoles(username: string, roles: string[], options?: Authentication.PutUserOptions): Promise<PouchDB.Core.Response>;
+    addRoles(username: string, roles: string, options?: Authentication.PutUserOptions): Promise<PouchDB.Core.Response>;
     
-//     /**
-//      * Delete roles `roles` from user `username`. `roles` can be a single string or an array of strings.
-//      * If any of the provided roles do not exist for the user, they will be ignored (will not cause an error)
-//      * Must be logged in as administrator.
-//      */
-//     deleteRoles(username: string, roles: string[], options?: Authentication.PutUserOptions): Promise<PouchDB.Core.Response>;
-//     deleteRoles(username: string, roles: string, options?: Authentication.PutUserOptions): Promise<PouchDB.Core.Response>;
+    /**
+     * Delete roles `roles` from user `username`. `roles` can be a single string or an array of strings.
+     * If any of the provided roles do not exist for the user, they will be ignored (will not cause an error)
+     * Must be logged in as administrator.
+     */
+    deleteRoles(username: string, roles: string[], options?: Authentication.PutUserOptions): Promise<PouchDB.Core.Response>;
+    deleteRoles(username: string, roles: string, options?: Authentication.PutUserOptions): Promise<PouchDB.Core.Response>;
 
-//     /**
-//      * Sign up a new admin.
-//      */
-//     signUpAdmin(username: string, password: string, options?:Authentication.PutUserOptions): Promise<string>;
+    /**
+     * Sign up a new admin.
+     */
+    signUpAdmin(username: string, password: string, options?:Authentication.PutUserOptions): Promise<string>;
 
-//     /**
-//      * Delete an admin.
-//      */
-//     deleteAdmin(username: string, options?: PouchDB.Core.Options): Promise<string>;
-//   }
-// }
+    /**
+     * Delete an admin.
+     */
+    deleteAdmin(username: string, options?: PouchDB.Core.Options): Promise<string>;
+  }
+}
 
-// declare module 'pouchdb-authentication' {
-//   const plugin: PouchDB.Plugin;
-//   export = plugin;
-// }
+declare module '@onsite/pouchdb-auth-utils' {
+  const plugin: PouchDB.Plugin;
+  export = plugin;
+}

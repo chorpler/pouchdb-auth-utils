@@ -333,7 +333,7 @@ db.hasRole('spiderman', 'superhero').then(function (response) {
 });
 ```
 
-**Note:** Generally, only server admins or the user themselves can check roles. Otherwise you will get a 403 `forbidden` error.
+**Note:** Generally, only server admins or the user themselves can check roles. Otherwise you will get a 404 `not_found` error.
 
 #### db.getRoles(username [, options])
 
@@ -350,7 +350,7 @@ db.getRoles('spiderman').then(function (response) {
 });
 ```
 
-**Note:** Generally, only server admins or the user themselves can get a user's roles. Otherwise you will get a 403 `forbidden` error.
+**Note:** Generally, only server admins or the user themselves can get a user's roles. Otherwise you will get a 404 `not_found` error.
 
 #### db.addRoles(username, roles [, options])
 
@@ -366,7 +366,7 @@ db.addRoles('spiderman', ['superhero', 'webslinger', 'avenger', 'mutant']).then(
 });
 ```
 
-**Note:** Only server admins can add roles. Otherwise you will get a 403 `forbidden` error.
+**Note:** Only server admins can add roles. Otherwise you will get a 403 `forbidden` error (if you are logged in as the user in question) or a 404 `not_found` error (if you are not).
 
 #### db.deleteRoles(username, roles [, options])
 
@@ -383,7 +383,7 @@ db.deleteRoles('spiderman', ['mutant', 'villain']).then(function (response) {
 });
 ```
 
-**Note:** Only server admins can delete roles. Otherwise you will get a 403 `forbidden` error.
+**Note:** Only server admins can delete roles. Otherwise you will get a 403 `forbidden` error (if you are logged in as the user in question) or a 404 `not_found` error (if you are not).
 
 #### db.signUpAdmin(username, password [, options])
 
