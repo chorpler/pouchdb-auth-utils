@@ -1,7 +1,10 @@
 import   * as PouchDB            from "pouchdb-core"         ;
-import { Response as nResponse } from "node-fetch"           ;
-import { RequestInit           } from "node-fetch"           ;
-import fetch                     from "node-fetch"           ;
+// import { Response as nResponse } from "node-fetch"           ;
+// import { RequestInit           } from "node-fetch"           ;
+// import fetch                     from "node-fetch"           ;
+import { Response as nResponse } from "cross-fetch"          ;
+import { Request                  } from "cross-fetch"          ;
+import fetch                     from "cross-fetch"          ;
 // import { Headers as nHeaders   } from "node-fetch"           ;
 import   fetchCookie             from 'fetch-cookie'         ;
 // import   * as tough              from 'tough-cookie'         ;
@@ -23,6 +26,8 @@ import   Url           from 'url-parse'            ;
 // import * as Urlp from 'url-parse';
 // import URLParse = require('url-parse');
 
+declare const global:any;
+
 const g = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : {};
 // var Cookie = tough.Cookie;
 // type ParsedURL = Url.ParsedURL;
@@ -36,7 +41,7 @@ const emptyFunc = function(...args):any {};
 const nodeFetch = fetch;
 // const nodeFetch = pFetch;
 const nFetch = nodeFetch;
-const cFetch:Fetch = fetchCookie(nodeFetch);
+const cFetch = fetchCookie(nodeFetch);
 const mode = typeof window !== 'undefined' ? 'browser' : 'node';
 
 const StaticPouch:any = PouchDB;
@@ -399,7 +404,7 @@ const getBaseUrl = function(db:PDB):string {
   }
 
   // let uri:ParsedURI = parseUri(fullName);
-  let p:ParsedURL = new Url(fullName);
+  let p = new Url(fullName);
   let path:string = p.pathname;
   let normalizedPath:string = path.endsWith('/') ? path.slice(0, -1) : path;
   // Compute parent path for databases not hosted on domain root (see #215)
@@ -454,8 +459,8 @@ const makeBaseUrl = function(baseURL:string, newURL:string):string {
   // let puri   : ParsedURI = parseUri(baseURL);
   let outurl:string = "";
   baseURL = baseURL.slice(-1) === '/' ? baseURL.slice(0,-1) : baseURL;
-  let baseuri:ParsedURL = new Url(baseURL);
-  let puri:ParsedURL = new Url(newURL, baseURL);
+  let baseuri = new Url(baseURL);
+  let puri = new Url(newURL, baseURL);
   let relativePath:string = puri.pathname + puri.query;
   // let outurl:string = getURLWithoutSearchParams(baseURL);
   // outurl = outurl.slice(-1) === '/' ? outurl.slice(0,-1) : outurl;
@@ -477,7 +482,7 @@ const makeBaseUrl = function(baseURL:string, newURL:string):string {
 }
 
 function getURLWithoutSearchParams(url:string):string {
-  let uri:ParsedURL = new Url(url);
+  let uri = new Url(url);
   // let port:string = uri.port ? ":" + uri.port : "";
   let auth:string = uri.username ? uri.username + ":" + uri.password + "@" : "";
   let cleanURL:string = uri.protocol + "://" + auth + uri.host + "/" + uri.pathname;
@@ -539,7 +544,7 @@ function getFullFetchURL(db:PDB, url:string):string {
   let queryURL:string = url.startsWith("/") ? url : "/" + url;
   let fullURL:string = base + queryURL;
   // let p:ParsedURI = parseUri(fullURL);
-  let p:ParsedURL = new Url(queryURL, base);
+  let p = new Url(queryURL, base);
   // let port:string = p.port ? ":" + p.port : "";
   // let fetchURL:string = `${p.protocol}://${p.host}${port}${p.path}`;
   let fetchURL = p.href;
@@ -605,8 +610,8 @@ async function doFetch(db:PDB, url:string, opts:any, forceDBFetch?:boolean):Prom
 
     // let fullURL = new URL(baseURL, dbname);
     // newurl = fullURL.href;
-    let dbURL:ParsedURL = new Url(dbname);
-    let fullURL:ParsedURL = new Url(baseURL, dbname);
+    let dbURL = new Url(dbname);
+    let fullURL = new Url(baseURL, dbname);
     let fetchURL:string = getFullFetchURL(db, baseURL);
     newurl = fetchURL;
     
@@ -675,7 +680,7 @@ async function doFetch(db:PDB, url:string, opts:any, forceDBFetch?:boolean):Prom
         // nFetchOpts.headers = newHeaders;
         nFetchOpts.headers = hdrs;
         // res = await nFetch(newurl, opts);
-        debuglog(`doFetch(): Node-Fetch'ing from url '${newurl}' with options:`, nFetchOpts);
+        debuglog(`doFetch(): Cross-Fetch'ing from url '${newurl}' with options:`, nFetchOpts);
         res = await fet(newurl, nFetchOpts);
         // res = await pFetch(newurl, nFetchOpts);
       } else {

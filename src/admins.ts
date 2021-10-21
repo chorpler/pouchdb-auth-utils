@@ -11,9 +11,7 @@ import { getBasicAuthHeadersFor } from './utils'       ;
 import { debuglog, debugerr     } from './utils'       ;
 import { debuglogemph           } from './utils'       ;
 import { Headers                } from 'pouchdb-fetch' ;
-// import { getBaseUrl             } from './utils'       ;
 import { assign                 } from 'pouchdb-utils' ;
-// import { toPromise              } from 'pouchdb-utils' ;
 
 const getConfigUrl = function(db:PDB, nodeName?:string):string {
   return (nodeName ? '/_node/' + nodeName : '') + '/_config';

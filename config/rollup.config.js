@@ -1,9 +1,10 @@
-import replace from 'rollup-plugin-replace';
-import buble from 'rollup-plugin-buble';
-// import typescript from 'rollup-plugin-typescript';
+import replace from '@rollup/plugin-replace';
+// import typescript from '@rollup/plugin-typescript';
 import typescript from 'rollup-plugin-typescript2';
-import resolve from 'rollup-plugin-node-resolve';
-import commonjs from 'rollup-plugin-commonjs';
+import buble from '@rollup/plugin-buble';
+// import typescript from '@rollup/plugin-typescript';
+import resolve from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
 
 var external = Object.keys(require('../package.json').dependencies);
 
@@ -19,11 +20,15 @@ export default config => {
     external: external,
     plugins: [
       resolve(),
+      typescript(),
       commonjs(),
-      typescript({
-        rollupCommonJSResolveHack: true,
-      }),
       buble(),
+      // typescript({
+      //   rollupCommonJSResolveHack: true,
+      // }),
+      // typescript({esModuleInterop: true, allowSyntheticDefaultImports: true}),
+      // typescript(),
+      // buble(),
       // resolve({
       //   // use "module" field for ES6 module if possible
       //   module: true, // Default: true
@@ -36,7 +41,7 @@ export default config => {
   
       //   // use "main" field or index.js, even if it's not an ES6 module
       //   // (needs to be converted from CommonJS to ES6
-      //   // – see https://github.com/rollup/rollup-plugin-commonjs
+      //   // – see https://github.com/rollup/@rollup/plugin-commonjs
       //   main: true,  // Default: true
   
       //   // some package.json files have a `browser` field which

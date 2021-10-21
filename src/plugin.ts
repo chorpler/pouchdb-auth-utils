@@ -1,5 +1,3 @@
-declare const window:any;
-
 import { deleteAdmin, getMembership, signUpAdmin } from "./admins";
 import { getSession, logIn, logOut } from "./authentication";
 import {
@@ -15,6 +13,8 @@ import {
   deleteRoles,
   hasRole,
 } from "./users";
+
+declare var window:any;
 
 const PouchDBAuthPlugin:any = {
   login               : logIn               ,

@@ -6,3 +6,5 @@ npm-debug.log
 test/test-bundle.js
 .idea
 .rpt2*
+.vscode
+tree.txt

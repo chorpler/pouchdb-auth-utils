@@ -16,10 +16,10 @@ export class AuthError extends Error {
     if(msg) {
       this.message = msg;
     }
-    if(typeof Error !== 'undefined' && typeof Error.captureStackTrace === 'function') {
+    if(typeof Error !== 'undefined' && typeof Error['captureStackTrace'] === 'function') {
       // Error.captureStackTrace(this, AuthError);
       // Error.captureStackTrace(this);
-      Error.captureStackTrace(self, AuthError);
+      Error['captureStackTrace'](self, AuthError);
       // Error.captureStackTrace(self, self.constructor);
     }
     if(!this.reason) {
