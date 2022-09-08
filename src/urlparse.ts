@@ -6,7 +6,7 @@ import { Response as nResponse    } from 'cross-fetch'          ;
 import { Request                  } from 'cross-fetch'          ;
 import fetch                        from 'cross-fetch'          ;
 // import { Headers as nHeaders   } from "node-fetch"           ;
-import   fetchCookie             from 'fetch-cookie'         ;
+import   fetchCookie             from '@onsite/fetch-cookie'    ;
 // import   * as tough              from 'tough-cookie'         ;
 import { btoa                  } from "pouchdb-binary-utils" ;
 // import { fetch as pFetch       } from 'pouchdb-fetch'        ;

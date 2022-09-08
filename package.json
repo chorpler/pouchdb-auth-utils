@@ -1,7 +1,17 @@
 {
   "name": "@onsite/pouchdb-auth-utils",
-  "version": "2.0.0-rc.8",
+  "version": "7.5.0",
   "description": "PouchDB Authentication plugin, revised for PouchDB 7.0.0+ and requiring promises",
+  "author": "David Sargeant <chorpler@gmail.com> (https://starmobiledevelopers.com)",
+  "homepage": "https://github.com/chorpler/pouchdb-auth-utils#readme",
+  "contributors": [
+    "Nolan Lawson <nolan@nolanlawson.com> (https://nolanlawson.com/)",
+    "Didier Villevalois <ptitjes@free.fr>"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chorpler/pouchdb-auth-utils.git"
+  },
   "keywords": [
     "pouch",
     "pouchdb",
@@ -9,18 +19,19 @@
     "couch",
     "couchdb"
   ],
+  "directories": {
+    "doc": "docs",
+    "lib": "lib",
+    "test": "test"
+  },
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/chorpler/pouchdb-auth-utils/issues"
   },
-  "license": "Apache-2.0",
-  "author": "David Sargeant <chorpler@gmail.com> (https://starmobiledevelopers.com)",
-  "contributors": [
-    "Nolan Lawson <nolan@nolanlawson.com> (https://nolanlawson.com/)",
-    "Didier Villevalois <ptitjes@free.fr>"
-  ],
   "files": [
     "compiled",
     "dist",
+    "docs",
     "lib",
     "src",
     "types"
@@ -30,9 +41,9 @@
   "module": "lib/index.es.js",
   "browser": "lib/index.browser.js",
   "types": "types/index.d.ts",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/chorpler/pouchdb-auth-utils.git"
+  "brVars": {
+    "name": "PouchAuthUtils",
+    "package": "pouchdb.auth.utils"
   },
   "scripts": {
     "clrscr": "node -e \"process.stdout.write('\\x1B[2J\\x1B[0f')\"",
@@ -42,9 +53,9 @@
     "rollup-cjs": "rollup -c config/rollup.config.cjs.js && rollup -c config/rollup.config.browser.cjs.js",
     "rollup-es": "rollup -c config/rollup.config.es.js && rollup -c config/rollup.config.browser.es.js",
     "rollup": "npm-run-all --parallel rollup-cjs rollup-es",
-    "browserify:rollup": "browserify -t [ babelify --global --presets [ @babel/preset-env ] ] -t brfs -p bundle-collapser/plugin -s PouchAuthUtils lib/index.browser.js > dist/pouchdb.auth.utils.js",
+    "browserify:rollup": "browserify -t [ babelify --global --presets [ @babel/preset-env ] ] -t brfs -p bundle-collapser/plugin -s $npm_package_brVars_name lib/index.browser.js > dist/$npm_package_brVars_package.js",
     "browserify": "npm run browserify:rollup",
-    "minify": "uglifyjs -mc < dist/pouchdb.auth.utils.js > dist/pouchdb.auth.utils.min.js",
+    "minify": "uglifyjs -mc < dist/$npm_package_brVars_package.js > dist/$npm_package_brVars_package.min.js",
     "build": "npm run build:prod",
     "build:dev": "npm-run-all clean rollup browserify minify",
     "build:prod": "npm-run-all clean rollup browserify minify",
@@ -60,19 +71,20 @@
   },
   "dependencies": {
     "cross-fetch": "^3.1.4",
-    "fetch-cookie": "^1.0.0",
-    "node-fetch": "^3.0.0",
-    "pouchdb-binary-utils": "^7.2.2",
-    "pouchdb-core": "^7.2.2",
-    "pouchdb-fetch": "^7.2.2",
-    "pouchdb-utils": "^7.2.2",
-    "tough-cookie": "^4.0.0",
-    "url-parse": "^1.5.3"
+    "@onsite/fetch-cookie": "2.2.0-rc.1",
+    "node-fetch": "2.6.7",
+    "pouchdb-binary-utils": "../lib/pouchdb-binary-utils-7.5.0.tgz",
+    "pouchdb-core": "../lib/pouchdb-core-7.5.0.tgz",
+    "pouchdb-fetch": "../lib/pouchdb-fetch-7.5.0.tgz",
+    "pouchdb-utils": "../lib/pouchdb-utils-7.5.0.tgz",
+    "tough-cookie": "3.0.1",
+    "url-parse": "1.5.10"
   },
   "devDependencies": {
     "@babel/core": "^7.15.8",
     "@babel/preset-env": "^7.15.8",
     "@babel/register": "^7.15.3",
+    "@onsite/pouchdb-debug": "../lib/onsite-pouchdb-debug-7.5.0.tgz",
     "@open-wc/building-rollup": "^2.0.1",
     "@rollup/plugin-buble": "^0.21.3",
     "@rollup/plugin-commonjs": "^21.0.1",
@@ -82,8 +94,8 @@
     "@rollup/plugin-typescript": "^8.3.0",
     "@types/debug": "^4.1.7",
     "@types/node": "^14.17.27",
-    "@types/pouchdb": "^6.3.2",
-    "@types/pouchdb-core": "^7.0.1",
+    "@types/pouchdb": "^6.4.0",
+    "@types/pouchdb-core": "^7.0.10",
     "@types/url-parse": "^1.4.3",
     "add-cors-to-couchdb": "0.0.6",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
@@ -110,8 +122,7 @@
     "mkdirp": "^1.0.4",
     "mocha": "^5.2.0",
     "npm-run-all": "^4.1.5",
-    "pouchdb-adapter-http": "^7.0.0",
-    "pouchdb-debug": "^7.0.0",
+    "pouchdb-adapter-http": "../lib/pouchdb-adapter-http-7.5.0.tgz",
     "pouchdb-server": "^4.1.0",
     "promise-polyfill": "^8.0.0",
     "puppeteer": "^1.12.2",
@@ -173,11 +184,5 @@
     "plugins": [
       "transform-es2015-modules-commonjs"
     ]
-  },
-  "homepage": "https://github.com/chorpler/pouchdb-auth-utils#readme",
-  "directories": {
-    "doc": "docs",
-    "lib": "lib",
-    "test": "test"
   }
 }
