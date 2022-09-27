@@ -4,14 +4,14 @@ import   * as PouchDB            from "pouchdb-core"         ;
 // import fetch                     from "node-fetch"           ;
 import { Response as nResponse } from "cross-fetch"          ;
 import { Request                  } from "cross-fetch"          ;
-import fetch                     from "cross-fetch"          ;
+import { fetch                 } from "pouchdb-fetch"          ;
 // import { Headers as nHeaders   } from "node-fetch"           ;
 import   fetchCookie             from '@onsite/fetch-cookie' ;
 // import   * as tough              from 'tough-cookie'         ;
 import { btoa                  } from "pouchdb-binary-utils" ;
 // import { fetch as pFetch       } from 'pouchdb-fetch'        ;
-import { fetch as pFetch       } from 'pouchdb'        ;
-import { Headers               } from "pouchdb-fetch"        ;
+// import { fetch as pFetch       } from 'pouchdb-fetch'        ;
+import { Headers as PHeaders   } from "pouchdb-fetch"        ;
 import { assign, parseUri      } from "pouchdb-utils"        ;
 import { AuthError             } from './AuthError'          ;
 // import * as URLParse from 'url-parse';
@@ -502,8 +502,8 @@ function getBasicAuthStringFor(username:string, password:string):string {
 }
 
 function getBasicAuthHeadersFor(username:string, password:string):Headers {
-  let authString:string = getBasicAuthStringFor(username, password);
-  let headers:Headers = new Headers();
+  let authString = getBasicAuthStringFor(username, password);
+  let headers = new PHeaders();
   headers.set('Authorization', authString);
   return headers;
 }
@@ -511,7 +511,7 @@ function getBasicAuthHeadersFor(username:string, password:string):Headers {
 const getBasicAuthHeaders = function(db?:PDB):Headers {
   let auth:AuthHeader;
   if(!db) {
-    return new Headers();
+    return new PHeaders();
   }
   if(db.__opts && db.__opts.auth) {
     auth = db.__opts.auth;
@@ -526,14 +526,14 @@ const getBasicAuthHeaders = function(db?:PDB):Headers {
   }
 
   if(!auth) {
-    return new Headers();
+    return new PHeaders();
   }
 
   return getBasicAuthHeadersFor(auth.username, auth.password);
   // let str:string = auth.username + ':' + auth.password;
   // let token:string = btoa(decodeURIComponent(encodeURIComponent(str)));
 
-  // let headers:Headers = new Headers();
+  // let headers:Headers = new PHeaders();
   // headers.set('Authorization', 'Basic ' + token);
 
   // return headers;
@@ -637,8 +637,8 @@ async function doFetch(db:PDB, url:string, opts:any, forceDBFetch?:boolean):Prom
       // opts.body = JSON.stringify(opts.body);
     }
     if(dbURL.username) {
-      let authString:Headers = getBasicAuthStringFor(dbURL.username, dbURL.password);
-      let headers:Headers = new Headers(opts.headers);
+      let authString = getBasicAuthStringFor(dbURL.username, dbURL.password);
+      let headers = new PHeaders(opts.headers);
       headers.set("Authorization", authString);
       opts.headers = headers;
       // newurl = fullURL.origin + fullURL.pathname + fullURL.search;
@@ -675,7 +675,7 @@ async function doFetch(db:PDB, url:string, opts:any, forceDBFetch?:boolean):Prom
         }
   
         let nFetchOpts:RequestInit = assign({}, opts);
-        let hdrs:Headers = new Headers(newHeaders);
+        let hdrs:Headers = new PHeaders(newHeaders);
         // let hdrs:Headers = new nHeaders(newHeaders);
         // nFetchOpts.headers = newHeaders;
         nFetchOpts.headers = hdrs;
