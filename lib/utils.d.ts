@@ -8,11 +8,10 @@
 /// <reference types="pouchdb-adapter-memory" />
 /// <reference types="pouchdb-adapter-websql" />
 /// <reference types="pouchdb-replication" />
-import { Headers } from "pouchdb-fetch";
 import { parseUri } from "pouchdb-utils";
 import { AuthError } from './AuthError';
 import Url from 'url-parse';
-declare const nFetch: typeof globalThis.fetch;
+declare const nFetch: import("@onsite/fetch-cookie").FetchCookieImpl<any, any, any>;
 declare const mode: string;
 declare const fet: any;
 interface AuthHeader {
@@ -154,7 +153,7 @@ declare const getComplexBaseUrl: (db: PDB, url: string) => string;
 declare const makeBaseUrl: (baseURL: string, newURL: string) => string;
 declare function getURLWithoutSearchParams(url: string): string;
 declare function getBasicAuthHeadersFor(username: string, password: string): Headers;
-declare const getBasicAuthHeaders: (db?: PDB) => any;
+declare const getBasicAuthHeaders: (db?: PDB) => Headers;
 declare function getFullFetchURL(db: PDB, url: string): string;
 declare function doFetch(db: PDB, url: string, opts: any, forceDBFetch?: boolean): Promise<any>;
 declare type LoginOptions = PouchDB.Core.Options;
