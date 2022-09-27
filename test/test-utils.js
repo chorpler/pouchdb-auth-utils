@@ -1,7 +1,7 @@
 var PouchDB = require('pouchdb-core');
 var PouchHttp = require('pouchdb-adapter-http');
 var Authentication = require('../lib');
-var PouchDBDebug = require('pouchdb-debug');
+var PouchDBDebug = require('@onsite/pouchdb-debug');
 var PouchFetch = require('pouchdb-fetch');
 
 PouchDB.plugin(PouchHttp);
